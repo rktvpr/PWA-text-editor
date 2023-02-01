@@ -2,8 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const { InjectManifest } = require('workbox-webpack-plugin');
-const {GenerateSW} = require('workbox-webpack-plugin');
+const {GenerateSW, InjectManifest} = require('workbox-webpack-plugin');
 // TODO: Add and configure workbox plugins for a service worker and manifest file. done?
 // TODO: Add CSS loaders and babel to webpack. done?
 
@@ -21,16 +20,26 @@ module.exports = () => {
     plugins: [
       new HtmlWebpackPlugin({
         template: './index.html',
-        title: 'Webpack Plugin',
+        title: 'text-editor',
       }),
       new MiniCssExtractPlugin(),
-      new GenerateSW({
-        swDest: './dist/sw.js'
+      new GenerateSW(),
+      new WebpackPwaManifest({
+        filename: 'manifest.json',
+        name: 'My Progressive Web App',
+        short_name: 'MyPWA',
+        description: 'My awesome Progressive Web App!',
+        background_color: '#ffffff',
+        publicPath: './',
+        crossorigin: 'use-credentials', 
+        icons: [
+          {
+            src: path.resolve('src/images/logo.png'),
+            sizes: [96, 128, 192, 256, 384, 512],
+             destination: path.join('assets', 'icons')
+          }
+        ]
       }),
-      new InjectManifest({
-        swSrc: './src/sw.js',
-        swDest: 'service-worker.js',
-      }), 
     ],
 
     module: {
